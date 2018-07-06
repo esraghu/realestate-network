@@ -1,0 +1,125 @@
+# Copyright IBM Corp. All Rights Reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+version: '2'
+
+volumes:
+  orderer.realestate.com:
+  peer0.builder1.realestate.com:
+  peer1.builder1.realestate.com:
+  peer0.agent1.realestate.com:
+  peer1.agent1.realestate.com:
+  peer0.regulator.realestate.com:
+  peer1.regulator.realestate.com:
+
+networks:
+  byfn:
+services:
+  ca0:
+    image: hyperledger/fabric-ca:$IMAGE_TAG
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca-builder1
+      - FABRIC_CA_SERVER_TLS_ENABLED=true
+      - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.builder1.realestate.com-cert.pem
+      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/CA1_PRIVATE_KEY
+    ports:
+      - "7054:7054"
+    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.builder1.realestate.com-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/CA1_PRIVATE_KEY -b admin:adminpw -d'
+    volumes:
+      - ./crypto-config/peerOrganizations/builder1.realestate.com/ca/:/etc/hyperledger/fabric-ca-server-config
+    container_name: ca_peerBuilder1
+    networks:
+      - byfn
+
+  ca1:
+    image: hyperledger/fabric-ca:$IMAGE_TAG
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca-agent1
+      - FABRIC_CA_SERVER_TLS_ENABLED=true
+      - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.agent1.realestate.com-cert.pem
+      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/CA2_PRIVATE_KEY
+    ports:
+      - "8054:7054"
+    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.agent1.realestate.com-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/CA2_PRIVATE_KEY -b admin:adminpw -d'
+    volumes:
+      - ./crypto-config/peerOrganizations/agent1.realestate.com/ca/:/etc/hyperledger/fabric-ca-server-config
+    container_name: ca_peerAgent1
+    networks:
+      - byfn
+
+  ca2:
+    image: hyperledger/fabric-ca:$IMAGE_TAG
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca-regulator
+      - FABRIC_CA_SERVER_TLS_ENABLED=true
+      - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.regulator.realestate.com-cert.pem
+      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/CA2_PRIVATE_KEY
+    ports:
+      - "9054:7054"
+    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.regulator.realestate.com-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/CA3_PRIVATE_KEY -b admin:adminpw -d'
+    volumes:
+      - ./crypto-config/peerOrganizations/regulator.realestate.com/ca/:/etc/hyperledger/fabric-ca-server-config
+    container_name: ca_peerRegulator
+    networks:
+      - byfn
+
+  orderer.realestate.com:
+    extends:
+      file:   base/docker-compose-base.yaml
+      service: orderer.realestate.com
+    container_name: orderer.realestate.com
+    networks:
+      - byfn
+
+  peer0.builder1.realestate.com:
+    container_name: peer0.builder1.realestate.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer0.builder1.realestate.com
+    networks:
+      - byfn
+
+  peer1.builder1.realestate.com:
+    container_name: peer1.builder1.realestate.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer1.builder1.realestate.com
+    networks:
+      - byfn
+
+  peer0.agent1.realestate.com:
+    container_name: peer0.agent1.realestate.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer0.agent1.realestate.com
+    networks:
+      - byfn
+
+  peer1.agent1.realestate.com:
+    container_name: peer1.agent1.realestate.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer1.agent1.realestate.com
+    networks:
+      - byfn
+
+  peer0.regulator.realestate.com:
+    container_name: peer0.regulator.realestate.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer0.regulator.realestate.com
+    networks:
+      - byfn
+
+  peer1.regulator.realestate.com:
+    container_name: peer1.regulator.realestate.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer1.regulator.realestate.com
+    networks:
+      - byfn
