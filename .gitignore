@@ -4,6 +4,7 @@ channel-artifacts
 
 # node-modules
 web/node_modules
+chaincode/node/node_modules
 
 # temporarily created items
 docker-compose-e2e.yaml

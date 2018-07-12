@@ -1,0 +1,21 @@
+{
+  "name": "realestate-network-chaincode",
+  "version": "0.0.1",
+  "description": "Chaincode for managing Realestate Network",
+  "main": "chaincode.js",
+  "scripts": {
+    "start": "node chaincode.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+		"fabric-shim": "~1.1.0"
+	},
+  "keywords": [
+    "node",
+    "chaincode",
+    "realestate",
+    "hyperledger"
+  ],
+  "author": "",
+  "license": "ISC"
+}

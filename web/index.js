@@ -7,6 +7,11 @@ app.get("/", (req, res) => {
     res.send("Welcome to the RealEstate Blockchain Network");
 })
 
+app.get('/builder/:peerName', (req, res) => {
+    
+    res.send(`builder ${req.params.peerName} is querying for ${req.query.project}`);
+})
+
 app.get("/query", (req, res) => {
     //const queryCmd = "ls -l ../byfn.sh"
     const queryCmd = "../byfn.sh query";
